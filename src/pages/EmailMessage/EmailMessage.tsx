@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { Button, Col, Form, Input, Layout, Menu, message, Modal, Row, Select, Space } from "antd";
-
 import { useNavigate } from "react-router-dom";
 
 import { sendEmailMessage } from "../../api/emailMessage";
@@ -103,7 +102,27 @@ export default function EmailMessage() {
                 <Form.Item label="To" name="to" rules={[{ required: true }, { type: "email" }]}>
                   <Input size="middle" />
                 </Form.Item>
-                <Form.Item label="Cc" name="cc" rules={[{ required: false }]}>
+                <Form.Item
+                  label="Cc"
+                  name="cc"
+                  rules={[
+                    { required: false },
+                    {
+                      validator: (_, value) => {
+                        if (value.length === 0) return Promise.resolve();
+                        if (
+                          /^([a-zA-Z0-9_\-\\.]+)@([a-zA-Z0-9\\-]+\.)+([a-zA-Z0-9\-\\.]+)+(,([a-zA-Z0-9_\-\\.]+)@([a-zA-Z0-9\\-]+\.)+([a-zA-Z0-9\-.]+))*$/.test(
+                            value
+                          )
+                        ) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject("Separate emails with comma (,)");
+                        }
+                      },
+                    },
+                  ]}
+                >
                   <Input size="middle" />
                 </Form.Item>
                 <Form.Item label="Subject" name="subject" rules={[{ required: true }]}>
